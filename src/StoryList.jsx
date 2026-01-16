@@ -97,9 +97,9 @@ export default function StoryList({
       ))}
 
       {stories.length === 0 && (
-        <p style={{ textAlign: "center", opacity: 0.6 }}>
-          No hay historias para mostrar
-        </p>
+<p className="empty-message">
+  No hay historias para mostrar
+</p>
       )}
     </div>
   );

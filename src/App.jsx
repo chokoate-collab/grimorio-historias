@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import stories from "./stories.json";
 import StoryList from "./StoryList";
 import StoryReader from "./StoryReader";
@@ -9,6 +9,12 @@ export default function App() {
   const [category, setCategory] = useState("todas");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
+  const [soundOn, setSoundOn] = useState(() => {
+    return localStorage.getItem("soundOn") === "false";
+  });
+
+  const audioRef = useRef(null);
+
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem("favorites");
     return saved ? JSON.parse(saved) : [];
@@ -17,6 +23,19 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  useEffect(() => {
+    localStorage.setItem("soundOn", soundOn);
+    if (!audioRef.current) return;
+
+    audioRef.current.volume = 0.25;
+
+    if (soundOn) {
+      audioRef.current.play().catch(() => {});
+    } else {
+      audioRef.current.pause();
+    }
+  }, [soundOn]);
 
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
@@ -29,9 +48,8 @@ export default function App() {
   const activeStory = stories.find((s) => s.id === activeId);
 
   const filteredStories = stories.filter((story) => {
-    const matchesName = story.title
-      .toLowerCase()
-      .includes(query.toLowerCase());
+    const matchesName =
+      story.title?.toLowerCase().includes(query.toLowerCase()) ?? false;
 
     const matchesCategory =
       category === "todas" || story.category === category;
@@ -43,8 +61,20 @@ export default function App() {
   });
 
   return (
-    <div className="app">
+    <div className={activeStory ? "app reading-mode" : "app"}>
       <h1 className="book-title">Grimorio de Historias</h1>
+
+      {/* 🎵 Audio ambiental */}
+      <audio ref={audioRef} src="/audio/ambiente.mp3" loop />
+
+      {!activeStory && (
+        <button
+          className="sound-toggle"
+          onClick={() => setSoundOn(!soundOn)}
+        >
+          {soundOn ? "🔊 Sonido ON" : "🔇 Sonido OFF"}
+        </button>
+      )}
 
       {!activeStory ? (
         <StoryList
@@ -60,10 +90,7 @@ export default function App() {
           setShowFavoritesOnly={setShowFavoritesOnly}
         />
       ) : (
-        <StoryReader
-          story={activeStory}
-          onBack={() => setActiveId(null)}
-        />
+        <StoryReader story={activeStory} onBack={() => setActiveId(null)} />
       )}
     </div>
   );
