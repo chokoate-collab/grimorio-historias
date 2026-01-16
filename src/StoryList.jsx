@@ -42,9 +42,15 @@ export default function StoryList({
         }}
       >
         <option value="todas">Todas</option>
-        <option value="fantasma">Fantasma</option>
-        <option value="criatura">Criatura</option>
-        <option value="casa">Casa</option>
+        <option value="Fantasmas">Fantasma</option>
+        <option value="Criatura">Criatura</option>
+        <option value="Dimensiones">Dimensiones</option>
+        <option value="Psicologico">Psicologico</option>
+        <option value="Internet">Internet</option>
+        <option value="Espiritual">Espiritual</option>
+        <option value="Objetos malditos">Objetos malditos</option>
+        <option value="Paranormal">Paranormal</option>
+        <option value="Gore">Gore</option>
       </select>
 
       {/* FILTRO FAVORITOS */}
