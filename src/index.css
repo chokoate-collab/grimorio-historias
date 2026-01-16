@@ -170,3 +170,24 @@ body {
   font-size: 18px;
   opacity: 0.9;
 }
+
+/* ✅ Historias leídas */
+.story-card.read {
+  opacity: 0.7;
+}
+
+/* ✔ Etiqueta leído */
+.read-check {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+/* 📱 Texto normal en celular */
+@media (max-width: 768px) {
+  .story-text {
+    text-align: left;
+  }
+}

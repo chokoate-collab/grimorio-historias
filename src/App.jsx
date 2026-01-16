@@ -9,14 +9,22 @@ export default function App() {
   const [category, setCategory] = useState("todas");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
+  // 🔊 Sonido
   const [soundOn, setSoundOn] = useState(() => {
-    return localStorage.getItem("soundOn") === "false";
+    return localStorage.getItem("soundOn") === "true";
   });
 
   const audioRef = useRef(null);
 
+  // ⭐ Favoritos
   const [favorites, setFavorites] = useState(() => {
     const saved = localStorage.getItem("favorites");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // ✅ Historias leídas
+  const [readStories, setReadStories] = useState(() => {
+    const saved = localStorage.getItem("readStories");
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -25,7 +33,12 @@ export default function App() {
   }, [favorites]);
 
   useEffect(() => {
+    localStorage.setItem("readStories", JSON.stringify(readStories));
+  }, [readStories]);
+
+  useEffect(() => {
     localStorage.setItem("soundOn", soundOn);
+
     if (!audioRef.current) return;
 
     audioRef.current.volume = 0.25;
@@ -46,15 +59,6 @@ export default function App() {
   };
 
   const activeStory = stories.find((s) => s.id === activeId);
-
-useEffect(() => {
-  if (activeId !== null) {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-}, [activeId]);
 
   const filteredStories = stories.filter((story) => {
     const matchesName =
@@ -92,11 +96,19 @@ useEffect(() => {
           setQuery={setQuery}
           category={category}
           setCategory={setCategory}
-          onSelect={setActiveId}
+          onSelect={(id) => {
+            setActiveId(id);
+
+            // Marcar como leída automáticamente
+            if (!readStories.includes(id)) {
+              setReadStories([...readStories, id]);
+            }
+          }}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           showFavoritesOnly={showFavoritesOnly}
           setShowFavoritesOnly={setShowFavoritesOnly}
+          readStories={readStories}
         />
       ) : (
         <StoryReader story={activeStory} onBack={() => setActiveId(null)} />
