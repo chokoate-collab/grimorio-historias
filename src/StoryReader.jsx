@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+
 export default function StoryReader({ story, onBack }) {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="story-container">
       <h2>{story.title}</h2>

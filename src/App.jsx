@@ -47,6 +47,15 @@ export default function App() {
 
   const activeStory = stories.find((s) => s.id === activeId);
 
+useEffect(() => {
+  if (activeId !== null) {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+}, [activeId]);
+
   const filteredStories = stories.filter((story) => {
     const matchesName =
       story.title?.toLowerCase().includes(query.toLowerCase()) ?? false;
