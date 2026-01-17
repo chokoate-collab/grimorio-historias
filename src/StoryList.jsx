@@ -9,37 +9,29 @@ export default function StoryList({
   onToggleFavorite,
   showFavoritesOnly,
   setShowFavoritesOnly,
+  readStories,
 }) {
+
   favorites = Array.isArray(favorites) ? favorites : [];
+  readStories = Array.isArray(readStories) ? readStories : [];
 
   return (
     <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+
       {/* BUSCADOR */}
       <input
         type="text"
         placeholder="Buscar historia..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "12px",
-          borderRadius: "8px",
-          border: "1px solid #ccc",
-        }}
+        className="search-input"
       />
 
-      {/* FILTRO DE CATEGORÍA */}
+      {/* FILTRO CATEGORÍA */}
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "12px",
-          borderRadius: "8px",
-          border: "1px solid #ccc",
-        }}
+        className="category-select"
       >
         <option value="todas">Todas</option>
         <option value="Fantasmas">Fantasma</option>
@@ -53,60 +45,70 @@ export default function StoryList({
         <option value="Gore">Gore</option>
       </select>
 
-      {/* FILTRO FAVORITOS */}
-      <label style={{ display: "block", marginBottom: "20px" }}>
+      {/* FAVORITOS */}
+      <label style={{ display: "block", marginBottom: "20px", color: "white" }}>
         <input
           type="checkbox"
           checked={showFavoritesOnly}
-          onChange={() =>
-            setShowFavoritesOnly(!showFavoritesOnly)
-          }
+          onChange={() => setShowFavoritesOnly(!showFavoritesOnly)}
           style={{ marginRight: "8px" }}
         />
         Mostrar solo favoritas ⭐
       </label>
 
       {/* LISTA */}
-      {stories.map((story) => (
-        <div
-          key={story.id}
-          style={{
-            background: "#f6f0e3",
-            border: "2px solid #9c8b6a",
-            padding: "20px",
-            marginBottom: "15px",
-            borderRadius: "10px",
-            cursor: "pointer",
-            position: "relative",
-          }}
-        >
-          <span
-            onClick={() => onToggleFavorite(story.id)}
-            style={{
-              position: "absolute",
-              top: "15px",
-              right: "15px",
-              fontSize: "22px",
-              cursor: "pointer",
-            }}
-          >
-            {favorites.includes(story.id) ? "★" : "☆"}
-          </span>
+      {stories.map((story) => {
 
-          <div onClick={() => onSelect(story.id)}>
-            <h2 style={{ margin: 0 }}>{story.title}</h2>
-            <p style={{ opacity: 0.6 }}>
-              {story.category.toUpperCase()}
-            </p>
+        const isRead = readStories.includes(story.id);
+
+        return (
+          <div
+            key={story.id}
+            className={`story-card ${isRead ? "read" : ""}`}
+          >
+
+            {/* Favorito */}
+            <span
+              onClick={() => onToggleFavorite(story.id)}
+              style={{
+                position: "absolute",
+                top: "15px",
+                right: "15px",
+                fontSize: "22px",
+                cursor: "pointer",
+                zIndex: 5
+              }}
+            >
+              {favorites.includes(story.id) ? "★" : "☆"}
+            </span>
+
+            {/* Card */}
+            <div onClick={() => onSelect(story.id)}>
+
+              <h2>{story.title}</h2>
+
+              <p className="story-category">
+                {story.category.toUpperCase()}
+              </p>
+
+              {isRead && (
+                <span className="read-check">
+                  ✔ Leído
+                </span>
+              )}
+
+            </div>
+
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {stories.length === 0 && (
-<p className="empty-message">
-  No hay historias para mostrar
-</p>
+        <p className="empty-message">
+          No hay historias para mostrar
+        </p>
       )}
+
     </div>
   );
 }

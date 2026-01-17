@@ -96,14 +96,18 @@ export default function App() {
           setQuery={setQuery}
           category={category}
           setCategory={setCategory}
-          onSelect={(id) => {
-            setActiveId(id);
+          
+onSelect={(id) => {
 
-            // Marcar como leída automáticamente
-            if (!readStories.includes(id)) {
-              setReadStories([...readStories, id]);
-            }
-          }}
+  // marcar leída primero
+  setReadStories((prev) => {
+    if (prev.includes(id)) return prev;
+    return [...prev, id];
+  });
+
+  setActiveId(id);
+}}
+          
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           showFavoritesOnly={showFavoritesOnly}
@@ -111,7 +115,13 @@ export default function App() {
           readStories={readStories}
         />
       ) : (
-        <StoryReader story={activeStory} onBack={() => setActiveId(null)} />
+<StoryReader
+  story={activeStory}
+  onBack={() => {
+    setActiveId(null);
+    window.scrollTo(0, 0);
+  }}
+/>
       )}
     </div>
   );

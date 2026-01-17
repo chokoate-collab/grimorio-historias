@@ -62,6 +62,7 @@ body {
    TARJETAS MENU
 ========================= */
 .story-card {
+  position: relative;
   background: #f6f1e6;
   border: 3px solid #b79d74;
   padding: 26px;
