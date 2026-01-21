@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import AdBanner from "./AdBanner";
 
 export default function StoryReader({ story, onBack }) {
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function StoryReader({ story, onBack }) {
       )}
 
       <p className="story-text">{story.content}</p>
-
+      <AdBanner /><button className="back-button"></button>
       <button className="back-button" onClick={onBack}>
         Volver
       </button>

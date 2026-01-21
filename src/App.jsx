@@ -4,6 +4,7 @@ import StoryList from "./StoryList";
 import StoryReader from "./StoryReader";
 
 export default function App() {
+
   const [activeId, setActiveId] = useState(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("todas");
@@ -28,14 +29,17 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Guardar favoritos
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  // Guardar leídas
   useEffect(() => {
     localStorage.setItem("readStories", JSON.stringify(readStories));
   }, [readStories]);
 
+  // Sonido ambiente
   useEffect(() => {
     localStorage.setItem("soundOn", soundOn);
 
@@ -48,6 +52,7 @@ export default function App() {
     } else {
       audioRef.current.pause();
     }
+
   }, [soundOn]);
 
   const toggleFavorite = (id) => {
@@ -61,6 +66,7 @@ export default function App() {
   const activeStory = stories.find((s) => s.id === activeId);
 
   const filteredStories = stories.filter((story) => {
+
     const matchesName =
       story.title?.toLowerCase().includes(query.toLowerCase()) ?? false;
 
@@ -75,6 +81,7 @@ export default function App() {
 
   return (
     <div className={activeStory ? "app reading-mode" : "app"}>
+
       <h1 className="book-title">Grimorio de Historias</h1>
 
       {/* 🎵 Audio ambiental */}
@@ -90,38 +97,46 @@ export default function App() {
       )}
 
       {!activeStory ? (
+
         <StoryList
           stories={filteredStories}
           query={query}
           setQuery={setQuery}
           category={category}
           setCategory={setCategory}
-          
-onSelect={(id) => {
 
-  // marcar leída primero
-  setReadStories((prev) => {
-    if (prev.includes(id)) return prev;
-    return [...prev, id];
-  });
+          onSelect={(id) => {
 
-  setActiveId(id);
-}}
-          
+            // marcar como leída solo una vez
+            setReadStories((prev) => {
+              if (prev.includes(id)) return prev;
+              return [...prev, id];
+            });
+
+            setActiveId(id);
+          }}
+
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           showFavoritesOnly={showFavoritesOnly}
           setShowFavoritesOnly={setShowFavoritesOnly}
           readStories={readStories}
         />
+
       ) : (
-<StoryReader
-  story={activeStory}
-  onBack={() => {
-    setActiveId(null);
-    window.scrollTo(0, 0);
-  }}
-/>
+
+        <StoryReader
+          story={activeStory}
+          onBack={() => {
+            setActiveId(null);
+
+            // arregla scroll siempre
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: "auto" });
+            }, 0);
+          }}
+        />
+
       )}
     </div>
   );
